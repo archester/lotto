@@ -1,8 +1,8 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <array>
+#include <vector>
 
-template<size_t num> using numbers_t = typename std::array<int, num>;
+using numbers_t = std::vector<int>;
 
 #endif // COMMON_H

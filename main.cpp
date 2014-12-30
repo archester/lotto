@@ -26,7 +26,7 @@ int main()
     auto draws_count = 0ll;
     std::vector<long long> hit_counts(NUMBERS_QTY + 1);
 
-    DrawingMachine<NUMBERS_QTY> drawingMachine(NUMBERS_TOTAL);
+    DrawingMachine<> drawingMachine(NUMBERS_QTY, NUMBERS_TOTAL);
 
     const auto my_numbers = drawingMachine.draw_numbers(true);
     /*assumes*/

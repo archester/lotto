@@ -5,7 +5,7 @@
 #include <algorithm>
 #include "common.h"
 
-template <size_t numbers_draw, typename GEN = std::default_random_engine>
+template <typename GEN = std::default_random_engine>
 class DrawingMachine
 {
     using rand_dev_t    = std::random_device;
@@ -19,14 +19,14 @@ class DrawingMachine
     size_t          numbers_draw_;
 
 public:
-    DrawingMachine(size_t numbers_total);
+    DrawingMachine(size_t numbers_draw, size_t numbers_total);
 
-    numbers_t<numbers_draw> draw_numbers(bool sort = false);
+    numbers_t draw_numbers(bool sort = false);
 };
 
 
-template <size_t numbers_draw, typename GEN>
-DrawingMachine<numbers_draw, GEN>::DrawingMachine(size_t numbers_total):
+template <typename GEN>
+DrawingMachine<GEN>::DrawingMachine(size_t numbers_draw, size_t numbers_total):
     rand_dev_(),
     rand_gen_(rand_dev_()),
     rand_distr_(1, numbers_total),
@@ -34,12 +34,12 @@ DrawingMachine<numbers_draw, GEN>::DrawingMachine(size_t numbers_total):
 {
 }
 
-template <size_t numbers_draw, typename GEN>
-numbers_t<numbers_draw> DrawingMachine<numbers_draw, GEN>::draw_numbers(bool sort)
+template <typename GEN>
+numbers_t DrawingMachine<GEN>::draw_numbers(bool sort)
 {
-    numbers_t<numbers_draw> numbers;
+    numbers_t numbers(numbers_draw_);
 
-    for (size_t i = 0; i < numbers_draw;)
+    for (size_t i = 0; i < numbers_draw_;)
     {
         auto val = rand_distr_(rand_gen_);
         if (
