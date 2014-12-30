@@ -14,19 +14,41 @@
 const auto COLOR_GREEN  = std::string("\x1B[32m");
 const auto COLOR_WHITE  = std::string("\x1B[37m");
 
-const size_t NUMBERS_QTY = 6;
-const size_t NUMBERS_TOTAL = 49;
-const auto DRAWS_NUMBER = 100000000ll;
-const size_t HIT_THRESH_PRINT = NUMBERS_QTY;
+const size_t DEFAULT_NUMBERS_QTY = 6;
+const size_t DEFAULT_NUMBERS_TOTAL = 49;
+const auto   DEFAULT_DRAWS_NUMBER = 100000000ll;
 
-int main()
+void parseParams(
+        int argc, char* argv[],
+        size_t& numbers_qty,
+        size_t& numbers_total,
+        long long& draws_number,
+        size_t& hit_thresh_print)
+
+{
+    numbers_qty         = (argc > 1) ? atoi(argv[1]) : DEFAULT_NUMBERS_QTY;
+    numbers_total       = (argc > 2) ? atoi(argv[2]) : DEFAULT_NUMBERS_TOTAL;
+    draws_number        = (argc > 3) ? atoi(argv[3]) : DEFAULT_DRAWS_NUMBER;
+    hit_thresh_print    = (argc > 4) ? atoll(argv[4]) : numbers_qty;
+}
+
+int main(int argc, char* argv[])
 {
     auto start_time = std::chrono::steady_clock::now();
 
-    auto draws_count = 0ll;
-    std::vector<long long> hit_counts(NUMBERS_QTY + 1);
+    /* get simulation params */
+    size_t numbers_qty;
+    size_t numbers_total;
+    long long draws_number;
+    size_t hit_thresh_print;
+    parseParams(argc, argv,
+                numbers_qty, numbers_total,
+                draws_number, hit_thresh_print);
 
-    DrawingMachine<> drawingMachine(NUMBERS_QTY, NUMBERS_TOTAL);
+    auto draws_count = 0ll;
+    std::vector<long long> hit_counts(numbers_qty + 1);
+
+    DrawingMachine<> drawingMachine(numbers_qty, numbers_total);
 
     const auto my_numbers = drawingMachine.draw_numbers(true);
     /*assumes*/
@@ -38,7 +60,7 @@ int main()
     };
     std::cout.imbue(std::locale(""));
 
-    while (draws_count < DRAWS_NUMBER)
+    while (draws_count < draws_number)
     {
         /* draw new numbers */
         auto numbers = drawingMachine.draw_numbers();
@@ -48,7 +70,7 @@ int main()
         ++hit_counts[hit_count];
 
         /* print if hit threshold reached */
-        if (hit_count >= HIT_THRESH_PRINT)
+        if (hit_count >= hit_thresh_print)
         {
             std::sort(numbers.begin(), numbers.end());
 
@@ -77,3 +99,4 @@ int main()
 
     return 0;
 }
+
