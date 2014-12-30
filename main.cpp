@@ -7,9 +7,9 @@
 #include <iomanip>
 #include <locale>
 #include <chrono>
+#include <cassert>
 
 #include "drawingmachine.h"
-#include "common.h"
 
 const auto COLOR_GREEN  = std::string("\x1B[32m");
 const auto COLOR_WHITE  = std::string("\x1B[37m");
@@ -41,25 +41,32 @@ int main(int argc, char* argv[])
     size_t numbers_total;
     long long draws_number;
     size_t hit_thresh_print;
+
     parseParams(argc, argv,
                 numbers_qty, numbers_total,
                 draws_number, hit_thresh_print);
+
+    assert(numbers_qty <= numbers_total);
 
     auto draws_count = 0ll;
     std::vector<long long> hit_counts(numbers_qty + 1);
 
     DrawingMachine<> drawingMachine(numbers_qty, numbers_total);
 
+    /* draw one set of numbers that will be compared agains all other draws */
     const auto my_numbers = drawingMachine.draw_numbers(true);
-    /*assumes*/
+
     auto is_hit = [&] (int num)
     {
         return std::find(my_numbers.begin(), my_numbers.end(), num) != my_numbers.end();
         //the array where we search is sorted yet still this one is slower:
         //return std::binary_search(my_numbers.begin(), my_numbers.end(), num);
     };
+
+    /* try to improve how numbers are being displayed */
     std::cout.imbue(std::locale(""));
 
+    /* main simulation loop */
     while (draws_count < draws_number)
     {
         /* draw new numbers */
@@ -86,6 +93,7 @@ int main(int argc, char* argv[])
     }
 
     /* print stats when done */
+    std::cout << "------------------------------------------\n";
     std::cout << "TOTAL DRAWS: " << draws_count << "\n";
     size_t i = 0;
     std::for_each(hit_counts.begin(), hit_counts.end(), [&](long long& val) {

@@ -3,7 +3,9 @@
 
 #include <random>
 #include <algorithm>
-#include "common.h"
+#include <vector>
+
+using numbers_t = std::vector<int>;
 
 template <typename GEN = std::default_random_engine>
 class DrawingMachine
